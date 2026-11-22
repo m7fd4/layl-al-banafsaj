@@ -114,6 +114,20 @@
             z-index: 60 !important;
             border-radius: 0 !important;
         }
+
+        /* تدوير المشغل بالعرض تلقائياً عند التكبير على الشاشة الطولية */
+        @media (orientation: portrait) {
+            .player-expanded.landscape-rotate {
+                width: 100dvh !important;
+                height: 100vw !important;
+                top: 50% !important;
+                left: 50% !important;
+                right: auto !important;
+                bottom: auto !important;
+                transform: translate(-50%, -50%) rotate(90deg) !important;
+                transform-origin: center center !important;
+            }
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-purple-600 selection:text-white">
@@ -651,12 +665,12 @@
             const label = document.getElementById('fullscreen-btn-text');
 
             if (expanded) {
-                stage.classList.add('player-expanded');
+                stage.classList.add('player-expanded', 'landscape-rotate');
                 exitBtn.classList.remove('hidden');
                 if (icon) icon.className = 'ph-bold ph-arrows-in text-base';
                 if (label) label.textContent = 'تصغير';
             } else {
-                stage.classList.remove('player-expanded');
+                stage.classList.remove('player-expanded', 'landscape-rotate');
                 exitBtn.classList.add('hidden');
                 if (icon) icon.className = 'ph-bold ph-arrows-out text-base';
                 if (label) label.textContent = 'تكبير';
@@ -677,43 +691,12 @@
 
         // تكبير مشغل الفيديو أو الخروج من وضع ملء الشاشة
         function togglePlayerFullscreen() {
-            const videoPlayer = document.getElementById('modal-video-player');
-            const stage = document.getElementById('player-stage');
-
             if (isStageExpanded || document.fullscreenElement || document.webkitFullscreenElement) {
                 exitExpandedView();
                 return;
             }
-
             updateFullscreenButtonUI(true);
-
-            if (!videoPlayer.classList.contains('hidden') && videoPlayer.webkitEnterFullscreen) {
-                try {
-                    videoPlayer.webkitEnterFullscreen();
-                    return;
-                } catch (_) {}
-            }
-
-            if (stage.requestFullscreen) {
-                stage.requestFullscreen().catch(() => {});
-            } else if (stage.webkitRequestFullscreen) {
-                try {
-                    stage.webkitRequestFullscreen();
-                } catch (_) {}
-            }
         }
-
-        document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement && isStageExpanded) {
-                updateFullscreenButtonUI(false);
-            }
-        });
-
-        document.addEventListener('webkitfullscreenchange', () => {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement && isStageExpanded) {
-                updateFullscreenButtonUI(false);
-            }
-        });
 
         // فتح نافذة مشغل الحلقة
         function openEpisodeModal(seasonNum, episodeNum) {
