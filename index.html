@@ -102,6 +102,18 @@
             pointer-events: none;
             opacity: 0.32;
         }
+
+        /* وضع ملء الشاشة المدمج للمشغل على الموبايل والكمبيوتر */
+        .player-expanded {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100dvh !important;
+            max-width: none !important;
+            aspect-ratio: auto !important;
+            z-index: 60 !important;
+            border-radius: 0 !important;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-purple-600 selection:text-white">
@@ -289,8 +301,8 @@
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                     <button id="modal-fullscreen-btn" onclick="togglePlayerFullscreen()" class="h-10 px-3 rounded-xl bg-purple-950/90 hover:bg-purple-800/80 text-purple-200 hover:text-white flex items-center gap-1.5 text-xs font-bold border border-purple-700/40 transition-colors cursor-pointer" title="ملء الشاشة">
-                        <i class="ph-bold ph-arrows-out text-base"></i>
-                        <span class="hidden sm:inline">ملء الشاشة</span>
+                        <i id="fullscreen-btn-icon" class="ph-bold ph-arrows-out text-base"></i>
+                        <span id="fullscreen-btn-text" class="hidden sm:inline">ملء الشاشة</span>
                     </button>
                     <a id="modal-external-link" href="#" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-purple-950/90 hover:bg-purple-800/80 text-purple-200 hover:text-white flex items-center justify-center border border-purple-700/40 transition-colors hidden" title="فتح في نافذة جديدة">
                         <i class="ph-bold ph-arrow-square-out text-lg"></i>
@@ -303,6 +315,12 @@
 
             <!-- منطقة عرض الفيديو -->
             <div id="player-stage" class="relative w-full aspect-video bg-black overflow-hidden">
+                <!-- زر تصغير/خروج يظهر فقط عندما يكون المشغل موسعاً بملء الشاشة -->
+                <button id="exit-expanded-btn" onclick="exitExpandedView()" class="hidden fixed top-4 left-4 z-[70] h-10 px-3.5 rounded-xl bg-black/80 hover:bg-purple-700 text-white flex items-center gap-1.5 text-xs font-bold border border-white/20 backdrop-blur-md cursor-pointer" title="تصغير المشغل">
+                    <i class="ph-bold ph-arrows-in text-base"></i>
+                    <span>تصغير</span>
+                </button>
+
                 <!-- 1. مشغل HTML5 للروابط المباشرة (.mp4 / .webm / turvexa.ir/dl/...) -->
                 <video id="modal-video-player" class="w-full h-full object-contain hidden" controls playsinline preload="metadata">
                     متصفحك لا يدعم تشغيل الفيديو.
@@ -538,6 +556,7 @@
         let currentSeason = 1;
         let activeModalSeason = 1;
         let activeModalEpisode = 1;
+        let isStageExpanded = false;
 
         window.onload = function () {
             renderEpisodes(1);
@@ -622,45 +641,84 @@
             return clean;
         }
 
-        // تكبير مشغل الفيديو أو الخروج من وضع ملء الشاشة
-        function togglePlayerFullscreen() {
-            const videoPlayer = document.getElementById('modal-video-player');
-            const embedPlayer = document.getElementById('modal-embed-player');
+        // تحديث حالة زر التكبير/التصغير
+        function updateFullscreenButtonUI(expanded) {
+            isStageExpanded = expanded;
             const stage = document.getElementById('player-stage');
+            const exitBtn = document.getElementById('exit-expanded-btn');
+            const icon = document.getElementById('fullscreen-btn-icon');
+            const label = document.getElementById('fullscreen-btn-text');
 
-            let target = stage;
-            if (!videoPlayer.classList.contains('hidden')) {
-                target = videoPlayer;
-            } else if (!embedPlayer.classList.contains('hidden')) {
-                target = embedPlayer;
+            if (expanded) {
+                stage.classList.add('player-expanded');
+                exitBtn.classList.remove('hidden');
+                if (icon) icon.className = 'ph-bold ph-arrows-in text-base';
+                if (label) label.textContent = 'تصغير';
+            } else {
+                stage.classList.remove('player-expanded');
+                exitBtn.classList.add('hidden');
+                if (icon) icon.className = 'ph-bold ph-arrows-out text-base';
+                if (label) label.textContent = 'ملء الشاشة';
             }
+        }
 
+        // الخروج من وضع التوسيع
+        function exitExpandedView() {
             if (document.fullscreenElement || document.webkitFullscreenElement) {
                 if (document.exitFullscreen) {
                     document.exitFullscreen().catch(() => {});
                 } else if (document.webkitExitFullscreen) {
                     document.webkitExitFullscreen();
                 }
+            }
+            updateFullscreenButtonUI(false);
+        }
+
+        // تكبير مشغل الفيديو أو الخروج من وضع ملء الشاشة
+        function togglePlayerFullscreen() {
+            const videoPlayer = document.getElementById('modal-video-player');
+            const stage = document.getElementById('player-stage');
+
+            if (isStageExpanded || document.fullscreenElement || document.webkitFullscreenElement) {
+                exitExpandedView();
                 return;
             }
 
-            if (target.requestFullscreen) {
-                target.requestFullscreen().catch(() => {
-                    if (stage.requestFullscreen) stage.requestFullscreen().catch(() => {});
-                });
-            } else if (target.webkitRequestFullscreen) {
-                target.webkitRequestFullscreen();
-            } else if (videoPlayer.webkitEnterFullscreen && !videoPlayer.classList.contains('hidden')) {
-                videoPlayer.webkitEnterFullscreen();
-            } else if (embedPlayer.src) {
-                window.open(embedPlayer.src, '_blank', 'noopener,noreferrer');
+            updateFullscreenButtonUI(true);
+
+            if (!videoPlayer.classList.contains('hidden') && videoPlayer.webkitEnterFullscreen) {
+                try {
+                    videoPlayer.webkitEnterFullscreen();
+                    return;
+                } catch (_) {}
+            }
+
+            if (stage.requestFullscreen) {
+                stage.requestFullscreen().catch(() => {});
+            } else if (stage.webkitRequestFullscreen) {
+                try {
+                    stage.webkitRequestFullscreen();
+                } catch (_) {}
             }
         }
+
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && isStageExpanded) {
+                updateFullscreenButtonUI(false);
+            }
+        });
+
+        document.addEventListener('webkitfullscreenchange', () => {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && isStageExpanded) {
+                updateFullscreenButtonUI(false);
+            }
+        });
 
         // فتح نافذة مشغل الحلقة
         function openEpisodeModal(seasonNum, episodeNum) {
             activeModalSeason = seasonNum;
             activeModalEpisode = episodeNum;
+            updateFullscreenButtonUI(false);
 
             const episodes = seasonNum === 1 ? SERIES_DATA.season1 : SERIES_DATA.season2;
             const ep = episodes.find(item => item.number === episodeNum) || episodes[0];
@@ -714,13 +772,7 @@
 
         // إغلاق نافذة المشغل
         function closeEpisodeModal() {
-            if (document.fullscreenElement || document.webkitFullscreenElement) {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen().catch(() => {});
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                }
-            }
+            exitExpandedView();
 
             const modal = document.getElementById('player-modal');
             const videoPlayer = document.getElementById('modal-video-player');
