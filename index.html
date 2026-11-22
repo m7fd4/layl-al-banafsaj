@@ -103,7 +103,7 @@
             opacity: 0.32;
         }
 
-        /* وضع ملء الشاشة المدمج للمشغل على الموبايل والكمبيوتر */
+        /* وضع ملء الشاشة المدمج للمشغل */
         .player-expanded {
             position: fixed !important;
             inset: 0 !important;
@@ -290,22 +290,23 @@
     </footer>
 
     <!-- ==================== نافذة مشغل الفيديو المنبثقة (Video Player Modal) ==================== -->
-    <div id="player-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-2 sm:p-6 bg-black/90 backdrop-blur-md overflow-y-auto">
-        <div id="player-modal-box" class="glass-panel w-full max-w-5xl rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-purple-500/35 flex flex-col">
+    <div id="player-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-0 sm:p-6 bg-black/95 backdrop-blur-md overflow-y-auto">
+        <div id="player-modal-box" class="glass-panel w-full h-full sm:h-auto max-w-5xl rounded-none sm:rounded-3xl overflow-hidden shadow-2xl border-0 sm:border border-purple-500/35 flex flex-col justify-between sm:justify-start">
 
             <!-- رأس نافذة المشغل -->
-            <div class="flex items-center justify-between gap-2 px-3 sm:px-5 py-3 sm:py-4 border-b border-purple-900/50 bg-void/90">
+            <div class="flex items-center justify-between gap-2 px-3 sm:px-5 py-3 sm:py-4 border-b border-purple-900/50 bg-void/95">
                 <div class="min-w-0">
                     <span id="modal-season-label" class="text-xs font-bold text-purple-400 block">الجزء الأول</span>
                     <h3 id="modal-episode-title" class="text-sm sm:text-xl font-extrabold text-white truncate">الحلقة 1</h3>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                    <button id="modal-fullscreen-btn" onclick="togglePlayerFullscreen()" class="h-10 px-3 rounded-xl bg-purple-950/90 hover:bg-purple-800/80 text-purple-200 hover:text-white flex items-center gap-1.5 text-xs font-bold border border-purple-700/40 transition-colors cursor-pointer" title="ملء الشاشة">
+                    <button id="modal-fullscreen-btn" onclick="togglePlayerFullscreen()" class="h-10 px-3 rounded-xl bg-purple-700 hover:bg-purple-600 text-white flex items-center gap-1.5 text-xs font-bold border border-purple-400/40 transition-colors cursor-pointer" title="تكبير الشاشة">
                         <i id="fullscreen-btn-icon" class="ph-bold ph-arrows-out text-base"></i>
-                        <span id="fullscreen-btn-text" class="hidden sm:inline">ملء الشاشة</span>
+                        <span id="fullscreen-btn-text">تكبير</span>
                     </button>
-                    <a id="modal-external-link" href="#" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-purple-950/90 hover:bg-purple-800/80 text-purple-200 hover:text-white flex items-center justify-center border border-purple-700/40 transition-colors hidden" title="فتح في نافذة جديدة">
-                        <i class="ph-bold ph-arrow-square-out text-lg"></i>
+                    <a id="modal-external-link" href="#" target="_blank" rel="noopener noreferrer" class="h-10 px-3 rounded-xl bg-purple-950/90 hover:bg-purple-800/80 text-purple-200 hover:text-white flex items-center gap-1.5 text-xs font-bold border border-purple-700/40 transition-colors hidden" title="فتح في شاشة كاملة">
+                        <i class="ph-bold ph-arrow-square-out text-base"></i>
+                        <span class="hidden sm:inline">شاشة كاملة</span>
                     </a>
                     <button onclick="closeEpisodeModal()" class="w-10 h-10 rounded-xl bg-purple-950/90 hover:bg-rose-600/80 text-purple-200 hover:text-white flex items-center justify-center border border-purple-700/40 transition-colors cursor-pointer" title="إغلاق المشغل">
                         <i class="ph-bold ph-x text-lg"></i>
@@ -314,9 +315,9 @@
             </div>
 
             <!-- منطقة عرض الفيديو -->
-            <div id="player-stage" class="relative w-full aspect-video bg-black overflow-hidden">
+            <div id="player-stage" class="relative w-full flex-1 sm:flex-initial min-h-[52vh] sm:min-h-0 sm:aspect-video bg-black overflow-hidden flex items-center">
                 <!-- زر تصغير/خروج يظهر فقط عندما يكون المشغل موسعاً بملء الشاشة -->
-                <button id="exit-expanded-btn" onclick="exitExpandedView()" class="hidden fixed top-4 left-4 z-[70] h-10 px-3.5 rounded-xl bg-black/80 hover:bg-purple-700 text-white flex items-center gap-1.5 text-xs font-bold border border-white/20 backdrop-blur-md cursor-pointer" title="تصغير المشغل">
+                <button id="exit-expanded-btn" onclick="exitExpandedView()" class="hidden fixed top-4 left-4 z-[70] h-10 px-3.5 rounded-xl bg-black/85 hover:bg-purple-700 text-white flex items-center gap-1.5 text-xs font-bold border border-white/25 backdrop-blur-md cursor-pointer" title="تصغير المشغل">
                     <i class="ph-bold ph-arrows-in text-base"></i>
                     <span>تصغير</span>
                 </button>
@@ -342,7 +343,7 @@
             </div>
 
             <!-- شريط التنقل السفلي داخل المشغل (الحلقة السابقة / الحلقة التالية) -->
-            <div class="flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-5 py-3 sm:py-4 bg-void/90 border-t border-purple-900/50">
+            <div class="flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-5 py-3 sm:py-4 bg-void/95 border-t border-purple-900/50">
                 <button id="modal-prev-btn" onclick="navigateEpisode(-1)" class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-xl bg-purple-950 hover:bg-purple-800/80 disabled:opacity-35 disabled:pointer-events-none text-purple-100 text-xs sm:text-sm font-bold border border-purple-700/40 transition-all cursor-pointer">
                     <i class="ph-bold ph-caret-right text-base"></i>
                     <span>الحلقة السابقة</span>
@@ -658,7 +659,7 @@
                 stage.classList.remove('player-expanded');
                 exitBtn.classList.add('hidden');
                 if (icon) icon.className = 'ph-bold ph-arrows-out text-base';
-                if (label) label.textContent = 'ملء الشاشة';
+                if (label) label.textContent = 'تكبير';
             }
         }
 
