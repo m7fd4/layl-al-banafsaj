@@ -102,6 +102,16 @@
             pointer-events: none;
             opacity: 0.32;
         }
+
+        /* ضبط مشغل الفيديو على الموبايل ومنع تمدده خارج الإطار */
+        #modal-video-player,
+        #modal-embed-player {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-purple-600 selection:text-white">
@@ -278,29 +288,29 @@
     </footer>
 
     <!-- ==================== نافذة مشغل الفيديو المنبثقة (Video Player Modal) ==================== -->
-    <div id="player-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md">
-        <div class="glass-panel w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl border border-purple-500/35 flex flex-col">
+    <div id="player-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-2 sm:p-6 bg-black/90 backdrop-blur-md overflow-y-auto">
+        <div class="glass-panel w-full max-w-5xl max-h-[94vh] my-auto rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-purple-500/35 flex flex-col">
 
             <!-- رأس نافذة المشغل -->
-            <div class="flex items-center justify-between px-5 py-4 border-b border-purple-900/50 bg-void/90">
+            <div class="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-purple-900/50 bg-void/90 shrink-0">
                 <div>
                     <span id="modal-season-label" class="text-xs font-bold text-purple-400 block">الجزء الأول</span>
                     <h3 id="modal-episode-title" class="text-base sm:text-xl font-extrabold text-white">الحلقة 1</h3>
                 </div>
-                <button onclick="closeEpisodeModal()" class="w-10 h-10 rounded-xl bg-purple-950/90 hover:bg-rose-600/80 text-purple-200 hover:text-white flex items-center justify-center border border-purple-700/40 transition-colors cursor-pointer" title="إغلاق المشغل">
+                <button onclick="closeEpisodeModal()" class="w-10 h-10 rounded-xl bg-purple-950/90 hover:bg-rose-600/80 text-purple-200 hover:text-white flex items-center justify-center border border-purple-700/40 transition-colors cursor-pointer shrink-0" title="إغلاق المشغل">
                     <i class="ph-bold ph-x text-lg"></i>
                 </button>
             </div>
 
             <!-- منطقة عرض الفيديو -->
-            <div class="relative w-full aspect-video bg-black">
+            <div class="relative w-full aspect-video max-h-[68vh] bg-black shrink-0 overflow-hidden">
                 <!-- 1. مشغل HTML5 للروابط المباشرة (.mp4 / .webm / turvexa.ir/dl/...) -->
-                <video id="modal-video-player" class="w-full h-full object-contain hidden" controls playsinline preload="metadata" referrerpolicy="no-referrer">
+                <video id="modal-video-player" class="w-full h-full object-contain hidden" controls playsinline webkit-playsinline preload="metadata" referrerpolicy="no-referrer">
                     متصفحك لا يدعم تشغيل الفيديو.
                 </video>
 
                 <!-- 2. مشغل Iframe لروابط التضمين (YouTube / Google Drive / Vimeo) -->
-                <iframe id="modal-embed-player" class="w-full h-full hidden" src="" frameborder="0" referrerpolicy="no-referrer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
+                <iframe id="modal-embed-player" class="w-full h-full hidden" src="" frameborder="0" referrerpolicy="no-referrer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; web-share" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
 
                 <!-- 3. رسالة أنيقة تظهر عند عدم توفر رابط للحلقة بعد -->
                 <div id="modal-coming-soon" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-void via-obsidian to-purple-950/70 p-6 text-center">
@@ -315,8 +325,8 @@
             </div>
 
             <!-- شريط التنقل السفلي داخل المشغل (الحلقة السابقة / الحلقة التالية) -->
-            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 bg-void/90 border-t border-purple-900/50">
-                <button id="modal-prev-btn" onclick="navigateEpisode(-1)" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-950 hover:bg-purple-800/80 disabled:opacity-35 disabled:pointer-events-none text-purple-100 text-xs sm:text-sm font-bold border border-purple-700/40 transition-all cursor-pointer">
+            <div class="flex items-center justify-between gap-2 sm:gap-3 px-4 sm:px-5 py-3 sm:py-4 bg-void/90 border-t border-purple-900/50 shrink-0">
+                <button id="modal-prev-btn" onclick="navigateEpisode(-1)" class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-xl bg-purple-950 hover:bg-purple-800/80 disabled:opacity-35 disabled:pointer-events-none text-purple-100 text-xs sm:text-sm font-bold border border-purple-700/40 transition-all cursor-pointer">
                     <i class="ph-bold ph-caret-right text-base"></i>
                     <span>الحلقة السابقة</span>
                 </button>
@@ -325,7 +335,7 @@
                     <i class="ph ph-clock"></i> 45:00
                 </span>
 
-                <button id="modal-next-btn" onclick="navigateEpisode(1)" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-700 to-violet-600 hover:from-purple-600 hover:to-violet-500 disabled:opacity-35 disabled:pointer-events-none text-white text-xs sm:text-sm font-bold shadow-purple-glow transition-all cursor-pointer">
+                <button id="modal-next-btn" onclick="navigateEpisode(1)" class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-700 to-violet-600 hover:from-purple-600 hover:to-violet-500 disabled:opacity-35 disabled:pointer-events-none text-white text-xs sm:text-sm font-bold shadow-purple-glow transition-all cursor-pointer">
                     <span>الحلقة التالية</span>
                     <i class="ph-bold ph-caret-left text-base"></i>
                 </button>
@@ -339,13 +349,13 @@
            🎬 دليل المبرمج لإضافة حلقات مسلسل "ليل البنفسج" (20 حلقة)
            ============================================================================
            لكل حلقة 4 حقول واضحة:
-           - title     : عنوان الحلقة الذي يظهر للمشاهد
-           - duration  : مدة الحلقة (مثال: "45:00")
-           - thumbnail : رابط أو مسار الصورة المصغرة للحلقة (اتركه "" لظهور صورة افتراضية)
-           - videoUrl  : رابط فيديو الحلقة:
-                         * رابط مباشر: مثل "https://example.com/ep1.mp4" أو "https://turvexa.ir/dl/XXXX"
-                         * رابط يوتيوب: مثل "https://www.youtube.com/watch?v=XXXX"
-                         * رابط جوجل درايف: مثل "https://drive.google.com/file/d/FILE_ID/preview"
+- title     : عنوان الحلقة الذي يظهر للمشاهد
+- duration  : مدة الحلقة (مثال: "45:00")
+- thumbnail : رابط أو مسار الصورة المصغرة للحلقة (اتركه "" لظهور صورة افتراضية)
+- videoUrl  : رابط فيديو الحلقة:
+  - رابط مباشر: مثل "https://example.com/ep1.mp4" أو "https://turvexa.ir/dl/XXXX"
+  - رابط يوتيوب: مثل "https://www.youtube.com/watch?v=XXXX"
+  - رابط جوجل درايف: مثل "https://drive.google.com/file/d/FILE_ID/preview"
            ============================================================================ */
 
         const SERIES_DATA = {
@@ -523,7 +533,7 @@
         };
 
         /* ============================================================================
-           ⚙️ محرك العرض والمشغل (لا حاجة لتعديل الكود بالأسفل)
+           ⚙️ محرك العرض والمشغل
            ============================================================================ */
 
         let currentSeason = 1;
@@ -577,56 +587,25 @@
 
                 card.innerHTML = `
                     <div>
-                        <!-- الصورة المصغرة للحلقة -->
                         <div class="relative aspect-video overflow-hidden bg-void">
                             <img src="${thumbSrc}"
                                  onerror="this.src='${defaultThumb}'"
                                  alt="${ep.title}"
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/20 to-transparent opacity-85"></div>
-
-                            <!-- رقم الحلقة -->
-                            <span class="absolute top-3 right-3 px-3 py-1 rounded-lg bg-obsidian/85 backdrop-blur-md border border-purple-500/40 text-purple-200 text-xs font-extrabold">
-                                الحلقة ${ep.number}
-                            </span>
-
-                            <!-- شارة الحالة -->
-                            ${hasVideo ? `
-                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-purple-600/90 text-white text-[11px] font-bold">
-                                    متاحة
-                                </span>
-                            ` : `
-                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/75 border border-purple-700/40 text-purple-300/85 text-[11px] font-bold">
-                                    قريباً
-                                </span>
-                            `}
-
-                            <!-- مدة الحلقة -->
-                            <span class="absolute bottom-2.5 left-3 px-2.5 py-0.5 rounded-md bg-black/75 text-purple-200 text-[11px] font-semibold">
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute bottom-2 left-2 px-2.5 py-1 rounded-lg bg-black/75 text-[11px] font-bold text-purple-200">
                                 ${ep.duration || '45:00'}
-                            </span>
-
-                            <!-- زر التشغيل عند التمرير -->
-                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-purple-950/45">
-                                <div class="w-12 h-12 rounded-full bg-purple-600 text-white flex items-center justify-center shadow-purple-glow transform scale-90 group-hover:scale-100 transition-transform">
-                                    <i class="ph-fill ph-play text-xl mr-[-2px]"></i>
-                                </div>
                             </div>
                         </div>
-
-                        <!-- تفاصيل الحلقة -->
                         <div class="p-4">
-                            <h3 class="text-base font-extrabold text-white group-hover:text-purple-300 transition-colors line-clamp-1">
-                                ${ep.title}
-                            </h3>
-                            <div class="mt-3 flex items-center justify-between text-xs text-purple-300/75">
-                                <span>${seasonNum === 1 ? 'الجزء الأول' : 'الجزء الثاني'}</span>
-                                <span class="font-bold text-purple-400 flex items-center gap-1">
-                                    <span>تشغيل</span>
-                                    <i class="ph-bold ph-play-circle text-sm"></i>
-                                </span>
-                            </div>
+                            <span class="text-xs font-bold text-purple-400 block">الجزء ${seasonNum} • حلقة ${ep.number}</span>
+                            <h4 class="text-base font-extrabold text-white mt-1">${ep.title}</h4>
                         </div>
+                    </div>
+                    <div class="px-4 pb-4">
+                        <span class="w-full py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 ${hasVideo ? 'bg-purple-700/80 text-white' : 'bg-purple-950/70 text-purple-300/70'}">
+                            <i class="ph-fill ${hasVideo ? 'ph-play-circle' : 'ph-clock'} text-base"></i>
+                            <span>${hasVideo ? 'مشاهدة الحلقة' : 'قريباً'}</span>
+                        </span>
                     </div>
                 `;
 
@@ -634,152 +613,83 @@
             });
         }
 
-        // فتح نافذة مشغل الفيديو وتشغيل الحلقة
-        function openEpisodeModal(seasonNum, episodeNum) {
-            const list = seasonNum === 1 ? SERIES_DATA.season1 : SERIES_DATA.season2;
-            const ep = list.find(item => item.number === episodeNum);
-            if (!ep) return;
+        // تحويل روابط يوتيوب إلى تضمين إن وُجدت
+        function formatEmbedUrl(url) {
+            const clean = url.trim();
+            const ytMatch = clean.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+            if (ytMatch && ytMatch[1]) {
+                return `https://www.youtube.com/embed/${ytMatch[1]}`;
+            }
+            return clean;
+        }
 
+        // فتح نافذة مشغل الحلقة
+        function openEpisodeModal(seasonNum, episodeNum) {
             activeModalSeason = seasonNum;
             activeModalEpisode = episodeNum;
 
-            // تحديث العناوين في المشغل
+            const episodes = seasonNum === 1 ? SERIES_DATA.season1 : SERIES_DATA.season2;
+            const ep = episodes.find(item => item.number === episodeNum) || episodes[0];
+
+            const modal = document.getElementById('player-modal');
+            const videoPlayer = document.getElementById('modal-video-player');
+            const embedPlayer = document.getElementById('modal-embed-player');
+            const comingSoon = document.getElementById('modal-coming-soon');
+
             document.getElementById('modal-season-label').textContent = seasonNum === 1 ? 'الجزء الأول' : 'الجزء الثاني';
             document.getElementById('modal-episode-title').textContent = ep.title;
             document.getElementById('modal-duration-label').innerHTML = `<i class="ph ph-clock"></i> ${ep.duration || '45:00'}`;
 
-            const modal = document.getElementById('player-modal');
-            const videoEl = document.getElementById('modal-video-player');
-            const iframeEl = document.getElementById('modal-embed-player');
-            const comingSoonEl = document.getElementById('modal-coming-soon');
+            videoPlayer.pause();
+            videoPlayer.removeAttribute('src');
+            videoPlayer.classList.add('hidden');
+            embedPlayer.src = '';
+            embedPlayer.classList.add('hidden');
+            comingSoon.classList.add('hidden');
 
-            // إعادة تهيئة المشغلات
-            videoEl.pause();
-            videoEl.removeAttribute('src');
-            videoEl.load();
-            iframeEl.src = '';
-
-            const url = (ep.videoUrl || '').trim();
-
-            if (!url) {
-                // إذا لم يُضف الرابط بعد
-                videoEl.classList.add('hidden');
-                iframeEl.classList.add('hidden');
-                comingSoonEl.classList.remove('hidden');
-                document.getElementById('coming-soon-title').textContent = 'هذه الحلقة ستتوفر قريباً';
-            } else if (isDirectVideoUrl(url)) {
-                // إذا كان رابط فيديو مباشر (.mp4, .webm, turvexa.ir/dl/...)
-                comingSoonEl.classList.add('hidden');
-                iframeEl.classList.add('hidden');
-                videoEl.classList.remove('hidden');
-
-                videoEl.poster = ep.thumbnail || '';
-                videoEl.src = url;
-                videoEl.play().catch(() => {});
+            const rawUrl = (ep.videoUrl || '').trim();
+            if (!rawUrl) {
+                document.getElementById('coming-soon-title').textContent = `${ep.title} ستتوفر قريباً`;
+                comingSoon.classList.remove('hidden');
+            } else if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(rawUrl) || rawUrl.includes('/dl/')) {
+                videoPlayer.src = rawUrl;
+                videoPlayer.classList.remove('hidden');
             } else {
-                // إذا كان رابط تضمين (YouTube, Google Drive /preview, Vimeo)
-                comingSoonEl.classList.add('hidden');
-                videoEl.classList.add('hidden');
-                iframeEl.classList.remove('hidden');
-
-                iframeEl.src = formatEmbedUrl(url);
+                embedPlayer.src = formatEmbedUrl(rawUrl);
+                embedPlayer.classList.remove('hidden');
             }
 
-            // تحديث حالة أزرار التنقل (السابقة / التالية)
-            document.getElementById('modal-prev-btn').disabled = (seasonNum === 1 && episodeNum === 1);
-            document.getElementById('modal-next-btn').disabled = (seasonNum === 2 && episodeNum === 10);
+            document.getElementById('modal-prev-btn').disabled = episodeNum <= 1;
+            document.getElementById('modal-next-btn').disabled = episodeNum >= episodes.length;
 
-            // إظهار النافذة
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-            document.body.style.overflow = 'hidden';
+            document.body.classList.add('overflow-hidden');
         }
 
-        // إغلاق نافذة المشغل وإيقاف الصوت والفيديو
+        // إغلاق نافذة المشغل
         function closeEpisodeModal() {
             const modal = document.getElementById('player-modal');
-            const videoEl = document.getElementById('modal-video-player');
-            const iframeEl = document.getElementById('modal-embed-player');
+            const videoPlayer = document.getElementById('modal-video-player');
+            const embedPlayer = document.getElementById('modal-embed-player');
 
-            videoEl.pause();
-            videoEl.removeAttribute('src');
-            videoEl.load();
-            iframeEl.src = '';
+            videoPlayer.pause();
+            videoPlayer.removeAttribute('src');
+            embedPlayer.src = '';
 
             modal.classList.add('hidden');
             modal.classList.remove('flex');
-            document.body.style.overflow = '';
+            document.body.classList.remove('overflow-hidden');
         }
 
-        // التنقل بين الحلقة السابقة والتالية
+        // التنقل بين الحلقات داخل المشغل
         function navigateEpisode(step) {
-            let targetSeason = activeModalSeason;
-            let targetEpisode = activeModalEpisode + step;
-
-            if (targetEpisode > 10 && targetSeason === 1) {
-                targetSeason = 2;
-                targetEpisode = 1;
-            } else if (targetEpisode < 1 && targetSeason === 2) {
-                targetSeason = 1;
-                targetEpisode = 10;
-            }
-
-            if (targetEpisode >= 1 && targetEpisode <= 10) {
-                if (currentSeason !== targetSeason) {
-                    switchSeason(targetSeason);
-                }
-                openEpisodeModal(targetSeason, targetEpisode);
+            const episodes = activeModalSeason === 1 ? SERIES_DATA.season1 : SERIES_DATA.season2;
+            const nextNum = activeModalEpisode + step;
+            if (nextNum >= 1 && nextNum <= episodes.length) {
+                openEpisodeModal(activeModalSeason, nextNum);
             }
         }
-
-        // التحقق من روابط الفيديو المباشرة
-        function isDirectVideoUrl(url) {
-            const lower = url.toLowerCase();
-            const clean = lower.split('?')[0];
-            return (
-                clean.endsWith('.mp4') ||
-                clean.endsWith('.webm') ||
-                clean.endsWith('.ogg') ||
-                clean.endsWith('.mov') ||
-                clean.endsWith('.m3u8') ||
-                lower.includes('turvexa.ir/dl/')
-            );
-        }
-
-        // تنسيق روابط التضمين (YouTube / Google Drive / Vimeo)
-        function formatEmbedUrl(url) {
-            // YouTube
-            const ytMatch = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
-            if (ytMatch && ytMatch[2].length === 11) {
-                return `https://www.youtube.com/embed/${ytMatch[2]}?rel=0&autoplay=1`;
-            }
-
-            // Google Drive
-            if (url.includes('drive.google.com') && url.includes('/view')) {
-                return url.replace('/view', '/preview');
-            }
-
-            // Vimeo
-            const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-            if (vimeoMatch && vimeoMatch[1]) {
-                return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
-            }
-
-            return url;
-        }
-
-        // إغلاق النافذة عند الضغط خارج إطار المشغل أو بزر Escape
-        document.getElementById('player-modal').addEventListener('click', function (e) {
-            if (e.target === this) {
-                closeEpisodeModal();
-            }
-        });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                closeEpisodeModal();
-            }
-        });
     </script>
 </body>
 </html>
