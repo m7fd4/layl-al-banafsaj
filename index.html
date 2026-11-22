@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>غسق</title>
+
+    <!-- استيراد خط Cairo و Tajawal من Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="photo_2026-11-22_04-54-45.jpg" />
+
+    <!-- استيراد Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- استيراد أيقونات Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- إعدادات Tailwind المخصصة لهوية ليل البنفسج -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        obsidian: '#06030c',
+                        void: '#0d0718',
+                        royal: '#4c1d95',
+                        violetGlow: '#7c3aed',
+                        neonPurple: '#a855f7',
+                        lavenderMist: '#e9d5ff',
+                    },
+                    boxShadow: {
+                        'purple-glow': '0 0 28px -5px rgba(124, 58, 237, 0.45)',
+                        'neon-border': '0 0 15px rgba(168, 85, 247, 0.25)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* تنسيقات الهوية البصرية والتمرير */
+        body {
+            background-color: #06030c;
+            color: #f3e8ff;
+            overflow-x: hidden;
+        }
+
+        /* شريط تمرير مخصص */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #06030c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b0764;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7c3aed;
+        }
+
+        /* تأثير الزجاج الداكن (Glassmorphism) */
+        .glass-panel {
+            background: rgba(16, 9, 30, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(168, 85, 247, 0.18);
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(22, 12, 42, 0.85) 0%, rgba(10, 5, 20, 0.95) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.16);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(168, 85, 247, 0.6);
+            box-shadow: 0 12px 28px -8px rgba(124, 58, 237, 0.4);
+        }
+
+        /* تدرج سينمائي لغلاف المسلسل */
+        .hero-gradient {
+            background:
+                linear-gradient(to top, #06030c 6%, rgba(6, 3, 12, 0.78) 45%, rgba(6, 3, 12, 0.35) 100%),
+                linear-gradient(to left, #06030c 12%, rgba(6, 3, 12, 0.6) 55%, rgba(6, 3, 12, 0.15) 100%);
+        }
+
+        /* إضاءة محيطية ناعمة في الخلفية */
+        .ambient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(130px);
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.32;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-purple-600 selection:text-white">
+
+    <!-- إضاءة خلفية بنفسجية خافتة -->
+    <div class="ambient-orb w-96 h-96 bg-purple-800 top-[-10%] right-[-5%]"></div>
+    <div class="ambient-orb w-[28rem] h-[28rem] bg-indigo-950 bottom-[5%] left-[-10%]"></div>
+
+    <!-- ==================== الشريط العلوي (Navbar) ==================== -->
+    <header class="fixed top-0 inset-x-0 z-40 glass-panel border-b border-purple-900/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+
+                <!-- الشعار واسم المسلسل -->
+                <a href="#hero" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-950 flex items-center justify-center shadow-purple-glow border border-purple-400/30 group-hover:scale-105 transition-transform">
+                        <i class="ph-fill ph-moon-stars text-2xl text-purple-200"></i>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-black tracking-wide bg-gradient-to-l from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">
+                           غسق
+                        </span>
+                        <span class="block text-[11px] text-purple-400/80 -mt-1 font-medium">منصة العرض الحصرية</span>
+                    </div>
+                </a>
+
+                <!-- أزرار التنقل السريع -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-bold text-purple-200/85">
+                    <a href="#hero" class="hover:text-white transition-colors">الرئيسية</a>
+                    <a href="#episodes-section" class="hover:text-white transition-colors">الحلقات</a>
+                    <a href="#about-section" class="hover:text-white transition-colors">عن المسلسل</a>
+                </nav>
+
+                <!-- شارة المسلسل -->
+                <div class="flex items-center">
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-950/80 border border-purple-500/30 text-purple-200 text-xs sm:text-sm font-bold shadow-neon-border">
+                        <span class="w-2 h-2 rounded-full bg-fuchsia-400 animate-pulse"></span>
+                        <span> AL-janabi</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== الواجهة الرئيسية (Hero Banner) ==================== -->
+    <section id="hero" class="relative min-h-[85vh] flex items-center pt-24 pb-16 overflow-hidden">
+        <!-- صورة غلاف المسلسل الرئيسية -->
+        <div class="absolute inset-0 z-0">
+            <!-- ========================================================================= -->
+            <!-- 📌 ضع رابط أو مسار صورة غلاف المسلسل هنا (مثال: "images/cover.jpg")       -->
+            <!-- ========================================================================= -->
+            <img id="series-cover-img"
+                 src="photo_2026-11-22_04-06-29.jpg"
+                 onerror="this.src='https://placehold.co/1920x1080/0d0718/a855f7?text=Layl+Al-Banafsaj'"
+                 alt="غلاف مسلسل ليل البنفسج"
+                 class="w-full h-full object-cover object-center opacity-50 scale-105">
+            <div class="absolute inset-0 hero-gradient"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="max-w-2xl space-y-6">
+                <!-- شارة التصنيف -->
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-950/80 border border-purple-500/40 text-purple-300 text-xs font-bold">
+                    <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+                    <span>دراما • غموض • تشويق</span>
+                </div>
+
+                <!-- اسم المسلسل -->
+                <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight drop-shadow-lg">
+                    ليل <span class="bg-gradient-to-l from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">البنفسج</span>
+                </h1>
+
+                <!-- معلومات المسلسل -->
+                <div class="flex flex-wrap items-center gap-3 text-sm text-purple-200/90 font-semibold">
+                    <span class="flex items-center gap-1 text-amber-400 font-bold">
+                        <i class="ph-fill ph-star"></i> 9.6
+                    </span>
+                    <span>•</span>
+                    <span>2026</span>
+                    <span>•</span>
+                    <span class="px-2.5 py-0.5 rounded-md bg-purple-900/60 border border-purple-700/50 text-xs">HD 1080p</span>
+                    <span>•</span>
+                    <span></span>
+                </div>
+
+                <!-- نبذة قصيرة -->
+                <p class="text-base sm:text-lg text-purple-100/80 leading-relaxed">
+                    حين يسدل الليل ستائره البنفسجية، تتكشف أسرار الماضي وتتشابك المصائر في رحلة درامية مشوقة تمتد عبر جزئين كاملين.
+                </p>
+
+                <!-- أزرار التحكم الرئيسية -->
+                <div class="flex flex-wrap items-center gap-4 pt-2">
+                    <button onclick="openEpisodeModal(1, 1)" class="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white text-obsidian hover:bg-purple-100 font-extrabold text-base shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer">
+                        <i class="ph-fill ph-play text-xl text-purple-700"></i>
+                        <span>شاهد الآن</span>
+                    </button>
+
+                    <a href="#episodes-section" class="flex items-center gap-3 px-6 py-4 rounded-2xl glass-panel hover:bg-purple-900/40 text-white font-bold text-base border border-purple-500/40 transition-all hover:scale-105 active:scale-95">
+                        <i class="ph-bold ph-list-numbers text-xl text-purple-400"></i>
+                        <span>تصفح الحلقات</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== قسم الحلقات والأجزاء (Episodes Section) ==================== -->
+    <section id="episodes-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- عنوان القسم وأزرار التبديل بين الجزئين -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+            <div>
+                <h2 class="text-3xl font-black text-white flex items-center gap-3">
+                    <i class="ph-fill ph-film-strip text-purple-400"></i>
+                    <span>حلقات المسلسل</span>
+                </h2>
+                <p class="text-purple-300/70 text-sm mt-1">اختر الجزء لمشاهدة الحلقات المتاحة</p>
+            </div>
+
+            <!-- أزرار التبديل بين الجزء الأول والجزء الثاني -->
+            <div class="inline-flex p-1.5 rounded-2xl glass-panel border border-purple-500/30 self-start md:self-auto">
+                <button id="tab-season-1" onclick="switchSeason(1)" class="px-5 sm:px-7 py-3 rounded-xl text-xs sm:text-sm font-extrabold transition-all bg-gradient-to-r from-purple-700 to-violet-600 text-white shadow-purple-glow cursor-pointer">
+                    الجزء الأول (10 حلقات)
+                </button>
+                <button id="tab-season-2" onclick="switchSeason(2)" class="px-5 sm:px-7 py-3 rounded-xl text-xs sm:text-sm font-extrabold transition-all text-purple-300 hover:text-white cursor-pointer">
+                    الجزء الثاني (10 حلقات)
+                </button>
+            </div>
+        </div>
+
+        <!-- شبكة عرض بطاقات الحلقات -->
+        <div id="episodes-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- يتم توليد البطاقات تلقائياً من مصفوفة SERIES_DATA -->
+        </div>
+    </section>
+
+    <!-- ==================== قسم عن المسلسل (About Section) ==================== -->
+    <section id="about-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="glass-panel rounded-3xl p-8 border border-purple-500/20 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+            <div class="md:col-span-2 space-y-3">
+                <span class="text-xs font-bold text-purple-400 uppercase tracking-widest">عن العمل</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-white">قصة مسلسل "ليل البنفسج"</h3>
+                <p class="text-purple-200/80 text-sm sm:text-base leading-relaxed">
+                    جريمة قتل تقع في يوم العيد، فتقلب أجواء الفرح إلى مأساة وتفجر صراعات عائلية وعشائرية وثأراً قديماً
+                </p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-purple-950/50 border border-purple-800/40 text-center">
+                    <span class="block text-3xl font-black text-purple-400">2</span>
+                    <span class="text-xs text-purple-200/80 font-semibold mt-1 block">أجزاء كاملة</span>
+                </div>
+                <div class="p-4 rounded-2xl bg-purple-950/50 border border-purple-800/40 text-center">
+                    <span class="block text-3xl font-black text-fuchsia-400">20</span>
+                    <span class="text-xs text-purple-200/80 font-semibold mt-1 block">حلقة متكاملة</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== التذييل (Footer) ==================== -->
+    <footer class="border-t border-purple-900/40 mt-12 py-8 bg-obsidian/95">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+                <i class="ph-fill ph-moon-stars text-xl text-purple-400"></i>
+                <span class="font-extrabold text-white">غسق</span>
+            </div>
+            <p class="text-xs text-purple-300/60 text-center">
+               Powered By Al-janabi - Mahmoud
+            </p>
+            <a href="#hero" class="text-xs text-purple-400 hover:text-purple-200 transition-colors">
+                العودة إلى الأعلى ↑
+            </a>
+        </div>
+    </footer>
+
+    <!-- ==================== نافذة مشغل الفيديو المنبثقة (Video Player Modal) ==================== -->
+    <div id="player-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md">
+        <div class="glass-panel w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl border border-purple-500/35 flex flex-col">
+
+            <!-- رأس نافذة المشغل -->
+            <div class="flex items-center justify-between px-5 py-4 border-b border-purple-900/50 bg-void/90">
+                <div>
+                    <span id="modal-season-label" class="text-xs font-bold text-purple-400 block">الجزء الأول</span>
+                    <h3 id="modal-episode-title" class="text-base sm:text-xl font-extrabold text-white">الحلقة 1</h3>
+                </div>
+                <button onclick="closeEpisodeModal()" class="w-10 h-10 rounded-xl bg-purple-950/90 hover:bg-rose-600/80 text-purple-200 hover:text-white flex items-center justify-center border border-purple-700/40 transition-colors cursor-pointer" title="إغلاق المشغل">
+                    <i class="ph-bold ph-x text-lg"></i>
+                </button>
+            </div>
+
+            <!-- منطقة عرض الفيديو -->
+            <div class="relative w-full aspect-video bg-black">
+                <!-- 1. مشغل HTML5 للروابط المباشرة (.mp4 / .webm / turvexa.ir/dl/...) -->
+                <video id="modal-video-player" class="w-full h-full object-contain hidden" controls playsinline preload="metadata" referrerpolicy="no-referrer">
+                    متصفحك لا يدعم تشغيل الفيديو.
+                </video>
+
+                <!-- 2. مشغل Iframe لروابط التضمين (YouTube / Google Drive / Vimeo) -->
+                <iframe id="modal-embed-player" class="w-full h-full hidden" src="" frameborder="0" referrerpolicy="no-referrer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
+
+                <!-- 3. رسالة أنيقة تظهر عند عدم توفر رابط للحلقة بعد -->
+                <div id="modal-coming-soon" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-void via-obsidian to-purple-950/70 p-6 text-center">
+                    <div class="w-16 h-16 rounded-2xl bg-purple-900/40 border border-purple-500/40 flex items-center justify-center text-purple-300 mb-4 shadow-purple-glow">
+                        <i class="ph-duotone ph-hourglass-medium text-4xl"></i>
+                    </div>
+                    <h4 id="coming-soon-title" class="text-xl sm:text-2xl font-extrabold text-white mb-2">هذه الحلقة ستتوفر قريباً</h4>
+                    <p class="text-purple-200/75 text-sm max-w-md leading-relaxed">
+                        لم يتم رفع رابط هذه الحلقة بعد. ترقبوا توفرها قريباً على منصة <strong>ليل البنفسج</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- شريط التنقل السفلي داخل المشغل (الحلقة السابقة / الحلقة التالية) -->
+            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 bg-void/90 border-t border-purple-900/50">
+                <button id="modal-prev-btn" onclick="navigateEpisode(-1)" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-950 hover:bg-purple-800/80 disabled:opacity-35 disabled:pointer-events-none text-purple-100 text-xs sm:text-sm font-bold border border-purple-700/40 transition-all cursor-pointer">
+                    <i class="ph-bold ph-caret-right text-base"></i>
+                    <span>الحلقة السابقة</span>
+                </button>
+
+                <span id="modal-duration-label" class="text-xs text-purple-300/80 font-semibold hidden sm:inline-flex items-center gap-1.5">
+                    <i class="ph ph-clock"></i> 45:00
+                </span>
+
+                <button id="modal-next-btn" onclick="navigateEpisode(1)" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-700 to-violet-600 hover:from-purple-600 hover:to-violet-500 disabled:opacity-35 disabled:pointer-events-none text-white text-xs sm:text-sm font-bold shadow-purple-glow transition-all cursor-pointer">
+                    <span>الحلقة التالية</span>
+                    <i class="ph-bold ph-caret-left text-base"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== المنطق البرمجي وبيانات الحلقات ==================== -->
+    <script>
+        /* ============================================================================
+           🎬 دليل المبرمج لإضافة حلقات مسلسل "ليل البنفسج" (20 حلقة)
+           ============================================================================
+           لكل حلقة 4 حقول واضحة:
+           - title     : عنوان الحلقة الذي يظهر للمشاهد
+           - duration  : مدة الحلقة (مثال: "45:00")
+           - thumbnail : رابط أو مسار الصورة المصغرة للحلقة (اتركه "" لظهور صورة افتراضية)
+           - videoUrl  : رابط فيديو الحلقة:
+                         * رابط مباشر: مثل "https://example.com/ep1.mp4" أو "https://turvexa.ir/dl/XXXX"
+                         * رابط يوتيوب: مثل "https://www.youtube.com/watch?v=XXXX"
+                         * رابط جوجل درايف: مثل "https://drive.google.com/file/d/FILE_ID/preview"
+           ============================================================================ */
+
+        const SERIES_DATA = {
+            // ========================================================================
+            // 🟣 الجزء الأول (10 حلقات)
+            // ========================================================================
+            season1: [
+                // --- الجزء الأول | الحلقة 1 ---
+                {
+                    number: 1,
+                    title: "الحلقة 1", // عنوان الحلقة
+                    duration: "36:00",           // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_04-54-45.jpg",               // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1nQ45wsCmBzM-MmIIiWsL1bCyvAR7o6K2/preview"                 // رابط فيديو الحلقة
+                },
+                // --- الجزء الأول | الحلقة 2 ---
+                {
+                    number: 2,
+                    title: "الحلقة 2", // عنوان الحلقة
+                    duration: "44:00",               // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_04-54-45.jpg",                   // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1n-HZq8DScaD1sO8CRuWovJpt70hPYk32/preview"                     // رابط فيديو الحلقة
+                },
+                // --- الجزء الأول | الحلقة 3 ---
+                {
+                    number: 3,
+                    title: "الحلقة 3", // عنوان الحلقة
+                    duration: "45:30",              // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_04-54-45.jpg",                  // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1zbXXVIAZpAIa8vc5Wc3ExQQ_nA5C7B_R/preview"                    // رابط فيديو الحلقة
+                },
+                // --- الجزء الأول | الحلقة 4 ---
+                {
+                    number: 4,
+                    title: "الحلقة 4", // عنوان الحلقة
+                    duration: "43:15",                  // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_04-54-45.jpg",                      // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1C2ynm29PVwZaaoOt_aVkWdAW9_02H6L7/preview"                        // رابط فيديو الحلقة
+                },
+                // --- الجزء الأول | الحلقة 5 ---
+                {
+                    number: 5,
+                    title: "الحلقة 5", // عنوان الحلقة
+                    duration: "46:00",                   // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_04-54-45.jpg",                       // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1TkHYD9Zn1YlBBW_blLr1ZYSlbvwjL1ak/preview"                         // رابط فيديو الحلقة
+                },
+                // --- الجزء الأول | الحلقة 6 ---
+                {
+                    number: 6,
+                    title: "الحلقة 6", // عنوان الحلقة
+                    duration: "44:45",              // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_04-54-45.jpg",                  // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1G1gjtx-OaxU_bL9hjpfMK4z1dqdNUVSv/preview"                    // رابط فيديو الحلقة
+                },
+                // --- الجزء الأول | الحلقة 7 ---
+                {
+                    number: 7,
+                    title: "الحلقة 7", // عنوان الحلقة
+                    duration: "45:10",             // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_04-54-45.jpg",                 // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/10jP105V43o69MnJqLsas7aosPyVa624L/preview"                   // رابط فيديو الحلقة
+                },
+                // --- الجزء الأول | الحلقة 8 ---
+                {
+                    number: 8,
+                    title: "الحلقة 8", // عنوان الحلقة
+                    duration: "47:00",          // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_04-54-45.jpg",              // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1ltrf7CFoxcpsQW7I8tNRqFK8TMKhBpsT/preview"                // رابط فيديو الحلقة
+                },
+                // --- الجزء الأول | الحلقة 9 ---
+                {
+                    number: 9,
+                    title: "الحلقة 9", // عنوان الحلقة
+                    duration: "48:20",                // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_04-54-45.jpg",                    // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/15GMLOxISLxOMqMSmfrJmNI5vlcdhVxyF/preview"                      // رابط فيديو الحلقة
+                },
+                // --- الجزء الأول | الحلقة 10 ---
+                {
+                    number: 10,
+                    title: "الحلقة 10", // عنوان الحلقة
+                    duration: "52:00",                    // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_04-54-45.jpg",                        // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1NLb_gUqqBTTvo4kP_p0i0sN4BwGMHNk3/preview"                          // رابط فيديو الحلقة
+                }
+            ],
+
+            // ========================================================================
+            // 🟣 الجزء الثاني (10 حلقات)
+            // ========================================================================
+            season2: [
+                // --- الجزء الثاني | الحلقة 1 ---
+                {
+                    number: 1,
+                    title: "الحلقة 1", // عنوان الحلقة
+                    duration: "57:26",               // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_03-40-19.jpg",                   // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1n7RYRbGDTkUL2PCj2dlIGivloXzzIpHc/preview"                     // رابط فيديو الحلقة
+                },
+                // --- الجزء الثاني | الحلقة 2 ---
+                {
+                    number: 2,
+                    title: "الحلقة 2", // عنوان الحلقة
+                    duration: "57:26",               // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_03-40-19.jpg",                   // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1XITk_WyWNUP2Qky2h9JoY0LCfXpWifEy/preview"                     // رابط فيديو الحلقة
+                },
+                // --- الجزء الثاني | الحلقة 3 ---
+                {
+                    number: 3,
+                    title: "الحلقة 3", // عنوان الحلقة
+                    duration: "57:26",              // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_03-40-19.jpg",                  // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1ZWvl4NGIpv2NI7mFNXX_QaAF_DsD8yqs/preview"                    // رابط فيديو الحلقة
+                },
+                // --- الجزء الثاني | الحلقة 4 ---
+                {
+                    number: 4,
+                    title: "الحلقة 4", // عنوان الحلقة
+                    duration: "57:26",                 // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_03-40-19.jpg",                     // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1dMl4gNIhbBRM2yNNHZCdAKmPk7r8RuBz/preview"                       // رابط فيديو الحلقة
+                },
+                // --- الجزء الثاني | الحلقة 5 ---
+                {
+                    number: 5,
+                    title: "الحلقة 5", // عنوان الحلقة
+                    duration: "57:26",                 // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_03-40-19.jpg",                     // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1OOCU0Pem5Fs0e5IyHRcZ3nvp65cSiVWo/preview"                       // رابط فيديو الحلقة
+                },
+                // --- الجزء الثاني | الحلقة 6 ---
+                {
+                    number: 6,
+                    title: "الحلقة 6", // عنوان الحلقة
+                    duration: "57:26",               // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_03-40-19.jpg",                   // رابط أو مسار صورة الحلقة
+                    videoUrl: "https://drive.google.com/file/d/1wqcbxaSrsLmjUUpsFWg9WCAOjvBNGvdr/preview"                     // رابط فيديو الحلقة
+                },
+                // --- الجزء الثاني | الحلقة 7 ---
+                {
+                    number: 7,
+                    title: "الحلقة 7", // عنوان الحلقة
+                    duration: "57:26",            // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_03-40-19.jpg",                // رابط أو مسار صورة الحلقة
+                    videoUrl: ""                  // رابط فيديو الحلقة
+                },
+                // --- الجزء الثاني | الحلقة 8 ---
+                {
+                    number: 8,
+                    title: "الحلقة 8", // عنوان الحلقة
+                    duration: "57:26",               // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_03-40-19.jpg",                   // رابط أو مسار صورة الحلقة
+                    videoUrl: ""                     // رابط فيديو الحلقة
+                },
+                // --- الجزء الثاني | الحلقة 9 ---
+                {
+                    number: 9,
+                    title: "الحلقة 9", // عنوان الحلقة
+                    duration: "57:26",                // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_03-40-19.jpg",                    // رابط أو مسار صورة الحلقة
+                    videoUrl: ""                      // رابط فيديو الحلقة
+                },
+                // --- الجزء الثاني | الحلقة 10 ---
+                {
+                    number: 10,
+                    title: "الحلقة 10", // عنوان الحلقة
+                    duration: "57:26",                   // مدة الحلقة
+                    thumbnail: "photo_2026-11-22_03-40-19.jpg",                       // رابط أو مسار صورة الحلقة
+                    videoUrl: ""                         // رابط فيديو الحلقة
+                }
+            ]
+        };
+
+        /* ============================================================================
+           ⚙️ محرك العرض والمشغل (لا حاجة لتعديل الكود بالأسفل)
+           ============================================================================ */
+
+        let currentSeason = 1;
+        let activeModalSeason = 1;
+        let activeModalEpisode = 1;
+
+        window.onload = function () {
+            renderEpisodes(1);
+        };
+
+        // التبديل بين الجزء الأول والجزء الثاني
+        function switchSeason(seasonNum) {
+            currentSeason = seasonNum;
+
+            const tab1 = document.getElementById('tab-season-1');
+            const tab2 = document.getElementById('tab-season-2');
+
+            const activeClasses = ['bg-gradient-to-r', 'from-purple-700', 'to-violet-600', 'text-white', 'shadow-purple-glow'];
+            const inactiveClasses = ['text-purple-300', 'hover:text-white'];
+
+            if (seasonNum === 1) {
+                tab1.classList.add(...activeClasses);
+                tab1.classList.remove(...inactiveClasses);
+                tab2.classList.remove(...activeClasses);
+                tab2.classList.add(...inactiveClasses);
+            } else {
+                tab2.classList.add(...activeClasses);
+                tab2.classList.remove(...inactiveClasses);
+                tab1.classList.remove(...activeClasses);
+                tab1.classList.add(...inactiveClasses);
+            }
+
+            renderEpisodes(seasonNum);
+        }
+
+        // عرض بطاقات الحلقات الـ 10
+        function renderEpisodes(seasonNum) {
+            const grid = document.getElementById('episodes-grid');
+            const episodes = seasonNum === 1 ? SERIES_DATA.season1 : SERIES_DATA.season2;
+
+            grid.innerHTML = '';
+
+            episodes.forEach(ep => {
+                const hasVideo = Boolean(ep.videoUrl && ep.videoUrl.trim() !== '');
+                const defaultThumb = `https://placehold.co/800x450/120824/c084fc?text=الجزء+${seasonNum}+•+الحلقة+${ep.number}`;
+                const thumbSrc = (ep.thumbnail && ep.thumbnail.trim() !== '') ? ep.thumbnail : defaultThumb;
+
+                const card = document.createElement('div');
+                card.onclick = () => openEpisodeModal(seasonNum, ep.number);
+                card.className = 'glass-card rounded-2xl overflow-hidden flex flex-col justify-between cursor-pointer group';
+
+                card.innerHTML = `
+                    <div>
+                        <!-- الصورة المصغرة للحلقة -->
+                        <div class="relative aspect-video overflow-hidden bg-void">
+                            <img src="${thumbSrc}"
+                                 onerror="this.src='${defaultThumb}'"
+                                 alt="${ep.title}"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/20 to-transparent opacity-85"></div>
+
+                            <!-- رقم الحلقة -->
+                            <span class="absolute top-3 right-3 px-3 py-1 rounded-lg bg-obsidian/85 backdrop-blur-md border border-purple-500/40 text-purple-200 text-xs font-extrabold">
+                                الحلقة ${ep.number}
+                            </span>
+
+                            <!-- شارة الحالة -->
+                            ${hasVideo ? `
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-purple-600/90 text-white text-[11px] font-bold">
+                                    متاحة
+                                </span>
+                            ` : `
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/75 border border-purple-700/40 text-purple-300/85 text-[11px] font-bold">
+                                    قريباً
+                                </span>
+                            `}
+
+                            <!-- مدة الحلقة -->
+                            <span class="absolute bottom-2.5 left-3 px-2.5 py-0.5 rounded-md bg-black/75 text-purple-200 text-[11px] font-semibold">
+                                ${ep.duration || '45:00'}
+                            </span>
+
+                            <!-- زر التشغيل عند التمرير -->
+                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-purple-950/45">
+                                <div class="w-12 h-12 rounded-full bg-purple-600 text-white flex items-center justify-center shadow-purple-glow transform scale-90 group-hover:scale-100 transition-transform">
+                                    <i class="ph-fill ph-play text-xl mr-[-2px]"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- تفاصيل الحلقة -->
+                        <div class="p-4">
+                            <h3 class="text-base font-extrabold text-white group-hover:text-purple-300 transition-colors line-clamp-1">
+                                ${ep.title}
+                            </h3>
+                            <div class="mt-3 flex items-center justify-between text-xs text-purple-300/75">
+                                <span>${seasonNum === 1 ? 'الجزء الأول' : 'الجزء الثاني'}</span>
+                                <span class="font-bold text-purple-400 flex items-center gap-1">
+                                    <span>تشغيل</span>
+                                    <i class="ph-bold ph-play-circle text-sm"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // فتح نافذة مشغل الفيديو وتشغيل الحلقة
+        function openEpisodeModal(seasonNum, episodeNum) {
+            const list = seasonNum === 1 ? SERIES_DATA.season1 : SERIES_DATA.season2;
+            const ep = list.find(item => item.number === episodeNum);
+            if (!ep) return;
+
+            activeModalSeason = seasonNum;
+            activeModalEpisode = episodeNum;
+
+            // تحديث العناوين في المشغل
+            document.getElementById('modal-season-label').textContent = seasonNum === 1 ? 'الجزء الأول' : 'الجزء الثاني';
+            document.getElementById('modal-episode-title').textContent = ep.title;
+            document.getElementById('modal-duration-label').innerHTML = `<i class="ph ph-clock"></i> ${ep.duration || '45:00'}`;
+
+            const modal = document.getElementById('player-modal');
+            const videoEl = document.getElementById('modal-video-player');
+            const iframeEl = document.getElementById('modal-embed-player');
+            const comingSoonEl = document.getElementById('modal-coming-soon');
+
+            // إعادة تهيئة المشغلات
+            videoEl.pause();
+            videoEl.removeAttribute('src');
+            videoEl.load();
+            iframeEl.src = '';
+
+            const url = (ep.videoUrl || '').trim();
+
+            if (!url) {
+                // إذا لم يُضف الرابط بعد
+                videoEl.classList.add('hidden');
+                iframeEl.classList.add('hidden');
+                comingSoonEl.classList.remove('hidden');
+                document.getElementById('coming-soon-title').textContent = 'هذه الحلقة ستتوفر قريباً';
+            } else if (isDirectVideoUrl(url)) {
+                // إذا كان رابط فيديو مباشر (.mp4, .webm, turvexa.ir/dl/...)
+                comingSoonEl.classList.add('hidden');
+                iframeEl.classList.add('hidden');
+                videoEl.classList.remove('hidden');
+
+                videoEl.poster = ep.thumbnail || '';
+                videoEl.src = url;
+                videoEl.play().catch(() => {});
+            } else {
+                // إذا كان رابط تضمين (YouTube, Google Drive /preview, Vimeo)
+                comingSoonEl.classList.add('hidden');
+                videoEl.classList.add('hidden');
+                iframeEl.classList.remove('hidden');
+
+                iframeEl.src = formatEmbedUrl(url);
+            }
+
+            // تحديث حالة أزرار التنقل (السابقة / التالية)
+            document.getElementById('modal-prev-btn').disabled = (seasonNum === 1 && episodeNum === 1);
+            document.getElementById('modal-next-btn').disabled = (seasonNum === 2 && episodeNum === 10);
+
+            // إظهار النافذة
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // إغلاق نافذة المشغل وإيقاف الصوت والفيديو
+        function closeEpisodeModal() {
+            const modal = document.getElementById('player-modal');
+            const videoEl = document.getElementById('modal-video-player');
+            const iframeEl = document.getElementById('modal-embed-player');
+
+            videoEl.pause();
+            videoEl.removeAttribute('src');
+            videoEl.load();
+            iframeEl.src = '';
+
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        // التنقل بين الحلقة السابقة والتالية
+        function navigateEpisode(step) {
+            let targetSeason = activeModalSeason;
+            let targetEpisode = activeModalEpisode + step;
+
+            if (targetEpisode > 10 && targetSeason === 1) {
+                targetSeason = 2;
+                targetEpisode = 1;
+            } else if (targetEpisode < 1 && targetSeason === 2) {
+                targetSeason = 1;
+                targetEpisode = 10;
+            }
+
+            if (targetEpisode >= 1 && targetEpisode <= 10) {
+                if (currentSeason !== targetSeason) {
+                    switchSeason(targetSeason);
+                }
+                openEpisodeModal(targetSeason, targetEpisode);
+            }
+        }
+
+        // التحقق من روابط الفيديو المباشرة
+        function isDirectVideoUrl(url) {
+            const lower = url.toLowerCase();
+            const clean = lower.split('?')[0];
+            return (
+                clean.endsWith('.mp4') ||
+                clean.endsWith('.webm') ||
+                clean.endsWith('.ogg') ||
+                clean.endsWith('.mov') ||
+                clean.endsWith('.m3u8') ||
+                lower.includes('turvexa.ir/dl/')
+            );
+        }
+
+        // تنسيق روابط التضمين (YouTube / Google Drive / Vimeo)
+        function formatEmbedUrl(url) {
+            // YouTube
+            const ytMatch = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
+            if (ytMatch && ytMatch[2].length === 11) {
+                return `https://www.youtube.com/embed/${ytMatch[2]}?rel=0&autoplay=1`;
+            }
+
+            // Google Drive
+            if (url.includes('drive.google.com') && url.includes('/view')) {
+                return url.replace('/view', '/preview');
+            }
+
+            // Vimeo
+            const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+            if (vimeoMatch && vimeoMatch[1]) {
+                return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
+            }
+
+            return url;
+        }
+
+        // إغلاق النافذة عند الضغط خارج إطار المشغل أو بزر Escape
+        document.getElementById('player-modal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeEpisodeModal();
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeEpisodeModal();
+            }
+        });
+    </script>
+</body>
+</html>
