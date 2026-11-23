@@ -2,14 +2,25 @@
 <html lang="ar" dir="rtl" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>غسق</title>
+
+    <!-- إعدادات تحويل الموقع إلى تطبيق على الآيفون (Add to Home Screen) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="غسق">
+    <meta name="application-name" content="غسق">
+    <meta name="theme-color" content="#06030c">
+
+    <!-- أيقونة التطبيق على الشاشة الرئيسية للآيفون والمتصفحات -->
+    <link rel="apple-touch-icon" sizes="180x180" href="photo_2026-11-22_04-54-45.jpg">
+    <link rel="icon" type="image/png" href="photo_2026-11-22_04-54-45.jpg" />
 
     <!-- استيراد خط Cairo و Tajawal من Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="photo_2026-11-22_04-54-45.jpg" />
 
     <!-- استيراد Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -44,14 +55,14 @@
     </script>
 
     <style>
-        /* تنسيقات الهوية البصرية والتمرير */
         body {
             background-color: #06030c;
             color: #f3e8ff;
             overflow-x: hidden;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* شريط تمرير مخصص */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -66,7 +77,6 @@
             background: #7c3aed;
         }
 
-        /* تأثير الزجاج الداكن (Glassmorphism) */
         .glass-panel {
             background: rgba(16, 9, 30, 0.78);
             backdrop-filter: blur(16px);
@@ -86,14 +96,12 @@
             box-shadow: 0 12px 28px -8px rgba(124, 58, 237, 0.45);
         }
 
-        /* تدرج سينمائي لغلاف المسلسل */
         .hero-gradient {
             background:
                 linear-gradient(to top, #06030c 6%, rgba(6, 3, 12, 0.78) 45%, rgba(6, 3, 12, 0.35) 100%),
                 linear-gradient(to left, #06030c 12%, rgba(6, 3, 12, 0.6) 55%, rgba(6, 3, 12, 0.15) 100%);
         }
 
-        /* إضاءة محيطية ناعمة في الخلفية */
         .ambient-orb {
             position: fixed;
             border-radius: 50%;
@@ -103,7 +111,6 @@
             opacity: 0.32;
         }
 
-        /* وضع العرض الأفقي الكامل للمشغل */
         .stage-landscape-mode {
             position: fixed !important;
             inset: 0 !important;
